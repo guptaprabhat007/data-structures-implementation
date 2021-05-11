@@ -1,13 +1,14 @@
-# delay-queue-implementation
+# data-structures-implementation
 
-        Delayed queue	-> blocking + priority queue
-
+# Delayed queue
+        
+        blocking + priority queue
+        
         Q: What are the use cases of delayed queue?
         - Programming with eventual consistency model in distributed applications/systems.
         - Add a delay between two activities
             - In Uber, if riders don’t pay within 7 days, send over the money to drivers directly.
             - Orders, when the order is over 10 minutes unpaid, the goods in the shopping cart are automatically released, and the order is invalid.
-
 
         Q: How delayed queue is implemented?
 
