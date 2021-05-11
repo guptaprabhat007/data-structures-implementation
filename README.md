@@ -1,5 +1,6 @@
 # data-structures-implementation
-
+# Consumer Producer
+# Thread Pool
 # Delayed queue
         
         blocking + priority queue
@@ -16,5 +17,9 @@
 
         When delay hasn’t expired, the message in queue is can’t be taken.
         The head of the queue is the element whose delay expired furthest in the past.
+
+
+        # Delayed queue
+
 
 
