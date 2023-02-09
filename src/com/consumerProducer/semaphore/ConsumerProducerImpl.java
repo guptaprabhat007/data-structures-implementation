@@ -1,5 +1,7 @@
 package com.consumerProducer.semaphore;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
@@ -7,7 +9,7 @@ public class ConsumerProducerImpl {
 
     public static void main(String args[]) {
 
-        Queue queue = new Queue();
+        Queue queue = new Queue(5);
         ProducerThread producerThread = new ProducerThread(queue);
         ConsumerThread consumerThread = new ConsumerThread(queue);
 
@@ -18,7 +20,13 @@ public class ConsumerProducerImpl {
 
 class Queue {
 
-    public int value;
+    private List<Integer> queue;
+    private int size;
+
+    public Queue(int size) {
+        this.size = size;
+        this.queue = new ArrayList<>(size);
+    }
 
     Semaphore semaphoreProd = new Semaphore(1);
     Semaphore semaphoreCons = new Semaphore(0);
@@ -31,9 +39,14 @@ class Queue {
             e.printStackTrace();
         }
 
-        int value = this.value;
-        semaphoreProd.release();
-        System.out.println("Got the value" + value);
+        if (queue.size() > 0) {
+            Integer value = queue.remove(0);
+            System.out.println("Got the value " + value);
+            semaphoreProd.release();
+            semaphoreCons.release();
+        }else {
+            throw new RuntimeException("QUEUE IS EMPTY");
+        }
     }
 
     void put(int value) {
@@ -44,9 +57,15 @@ class Queue {
             e.printStackTrace();
         }
 
-        this.value = value;
-        System.out.println("Put the value" + value);
-        semaphoreCons.release();
+        if (queue.size() < size) {
+            queue.add(value);
+            System.out.println("Put the value " + value);
+            semaphoreProd.release();
+            semaphoreCons.release();
+        }else {
+            throw new RuntimeException("QUEUE IS FULL");
+        }
+
     }
 }
 
@@ -65,7 +84,7 @@ class ProducerThread extends Thread {
         try {
             while (true) {
 
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 Random random = new Random();
                 int value = random.nextInt(100);
                 queue.put(value);

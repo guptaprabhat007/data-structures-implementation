@@ -11,17 +11,36 @@ public class ThreadPoolImpl {
         for (int i = 0; i < 10; i++) {
 
             int taskNo = i;
-            threadPool.execute(() -> {
+            RunnableTask reportRunnable = new RunnableTask(taskNo);
+            threadPool.execute(reportRunnable);
+
+/*            threadPool.execute(() -> {
                 String message =
                         Thread.currentThread().getName()
                                 + ": Task " + taskNo;
                 System.out.println(message);
             });
+            */
         }
 
         //threadPool.waitUntilAllTasksFinished();
-        threadPool.stop();
+        //threadPool.stop();
 
+    }
+
+
+    static class RunnableTask implements Runnable {
+
+        Integer taskNo;
+
+        RunnableTask(Integer taskNo) {
+            this.taskNo = taskNo;
+        }
+
+        public void run() {
+            String message = Thread.currentThread().getName() + ": Task " + this.taskNo;
+            System.out.println(message);
+        }
     }
 }
 

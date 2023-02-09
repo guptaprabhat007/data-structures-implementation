@@ -6,13 +6,19 @@ import java.util.concurrent.BlockingQueue;
 
 public class ConsumerProducerImpl {
 
-    public static BlockingQueue<Integer> queue;
+    private BlockingQueue<Integer> queue;
+    private int size;
+
+    ConsumerProducerImpl(int size){
+        this.size = size;
+        this.queue  = new ArrayBlockingQueue<Integer>(size);
+    }
 
     public static void main(String[] args) {
 
-        queue = new ArrayBlockingQueue<Integer>(10);
-        ProducerThread producerThread = new ProducerThread();
-        ConsumerThread consumerThread = new ConsumerThread();
+        ConsumerProducerImpl consumerProducer = new ConsumerProducerImpl(10);
+        ProducerThread producerThread = new ProducerThread(consumerProducer.queue, consumerProducer.size);
+        ConsumerThread consumerThread = new ConsumerThread(consumerProducer.queue, consumerProducer.size);
 
         producerThread.start();
         consumerThread.start();
@@ -21,6 +27,14 @@ public class ConsumerProducerImpl {
 }
 
 class ProducerThread extends Thread {
+
+    private BlockingQueue<Integer> queue;
+    private int size;
+
+    ProducerThread(BlockingQueue<Integer> queue, int size){
+        this.size = size;
+        this.queue  = new ArrayBlockingQueue<Integer>(size);
+    }
 
     @Override
     public void run() {
@@ -35,9 +49,9 @@ class ProducerThread extends Thread {
 
         Random random = new Random();
         while (true) {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             int produced = random.nextInt(100);
-            ConsumerProducerImpl.queue.add(produced);
+            this.queue.offer(produced);
             System.out.println("Produced : " + produced);
         }
 
@@ -45,6 +59,14 @@ class ProducerThread extends Thread {
 }
 
 class ConsumerThread extends Thread {
+
+    private BlockingQueue<Integer> queue;
+    private int size;
+
+    ConsumerThread(BlockingQueue<Integer> queue, int size){
+        this.size = size;
+        this.queue  = new ArrayBlockingQueue<Integer>(size);
+    }
 
     @Override
     public void run() {
@@ -61,7 +83,7 @@ class ConsumerThread extends Thread {
         while (true) {
 
             Thread.sleep(2000);
-            Integer consumed = ConsumerProducerImpl.queue.take();
+            Integer consumed = this.queue.take();
             System.out.println("Consumed : " + consumed);
         }
 

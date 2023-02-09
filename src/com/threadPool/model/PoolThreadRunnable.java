@@ -20,7 +20,7 @@ public class PoolThreadRunnable implements Runnable {
                 runnable.run();
             } catch (Exception e) {
                 //log or otherwise report exception,
-                //but keep pool thread alive.
+                //but keep pool thread alive
             }
         }
     }
